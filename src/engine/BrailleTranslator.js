@@ -13,13 +13,13 @@ class BrailleTranslator {
         this.initialConsonants = {
             'ㄱ': [4],
             'ㄴ': [1, 4],
-            'ㄷ': [2, 4, 5],
+            'ㄷ': [2, 4],
             'ㄹ': [5],
             'ㅁ': [1, 5],
             'ㅂ': [4, 5],
-            'ㅅ': [2, 3, 4],
+            'ㅅ': [6],
             'ㅇ': [],  // 표기 안 함
-            '선택': [4, 6],
+            'ㅈ': [4, 6],
             'ㅊ': [5, 6],
             'ㅋ': [1, 2, 4],
             'ㅌ': [1, 2, 5],
@@ -70,9 +70,9 @@ class BrailleTranslator {
             'ㅓ': [2, 3, 4],
             'ㅕ': [1, 5, 6],
             'ㅗ': [1, 3, 6],
-            'ㅛ': [3, 4, 6],
-            'ㅜ': [1, 4, 6],
-            'ㅠ': [1, 4, 5],
+            'ㅛ': [3, 5, 6],
+            'ㅜ': [1, 3, 4],
+            'ㅠ': [1, 4, 6],
             'ㅡ': [2, 4, 6],
             'ㅣ': [1, 3, 5]
         };
@@ -80,13 +80,14 @@ class BrailleTranslator {
         // 제7항: 복합 모음
         this.complexVowels = {
             'ㅐ': [1, 2, 3, 5],
+            'ㅒ': [[3, 4, 5], [1, 2, 3, 5]],  // ㅑ+ㅐ
             'ㅔ': [1, 3, 4, 5],
             'ㅚ': [1, 3, 4, 5, 6],
-            'ㅘ': [[1, 3, 6], [1, 2, 6]],      // ㅗ+ㅏ
-            'ㅙ': [[1, 3, 6], [1, 2, 3, 5]],  // ㅗ+ㅐ
-            'ㅝ': [[1, 4, 6], [2, 3, 4]],      // ㅜ+ㅓ
-            'ㅞ': [[1, 4, 6], [1, 2, 3, 5]],  // ㅜ+ㅔ
-            'ㅟ': [[1, 4, 6], [1, 3, 5]],      // ㅜ+ㅣ
+            'ㅘ': [1, 2, 3, 6],                // 와
+            'ㅙ': [[1, 2, 3, 6], [1, 2, 3, 5]],  // ㅘ+ㅐ
+            'ㅝ': [1, 2, 3, 4],                // 워
+            'ㅞ': [[1, 2, 3, 4], [1, 2, 3, 5]],  // ㅝ+ㅐ
+            'ㅟ': [[1, 3, 4], [1, 2, 3, 5]],      // ㅜ+ㅣ
             'ㅢ': [2, 4, 5, 6]
         };
 
@@ -126,14 +127,21 @@ class BrailleTranslator {
             '울': [1, 2, 3, 4, 6],
             '은': [1, 3, 5, 6],
             '을': [2, 3, 4, 6],
-            '인': [1, 2, 3, 5],
+            '인': [1, 2, 3, 4, 5],
             '것': [[4, 5, 6], [2, 3, 4]]
+        };
+
+        // 제16항: 된소리 약자 (까, 싸, 껏)
+        this.tenseAbbreviations = {
+            '까': [[6], [1, 2, 4, 6]],              // 된소리표 + 가 약자
+            '싸': [[6], [6]],                        // 된소리표 + 사 약자
+            '껏': [[6], [4, 5, 6], [2, 3, 4]]       // 된소리표 + 것 약자
         };
 
         // 제17항: 약자 (성~청)
         this.seongAbbreviations = {
-            '성': [[2, 3, 4], [1, 2, 4, 5, 6]],      // ㅅ + 영
-            '썽': [[6], [2, 3, 4], [1, 2, 4, 5, 6]], // ㅆ + 영
+            '성': [[6], [1, 2, 4, 5, 6]],      // ㅅ + 영
+            '썽': [[6], [6], [1, 2, 4, 5, 6]], // ㅆ + 영
             '정': [[4, 6], [1, 2, 4, 5, 6]],         // ㅈ + 영
             '쩡': [[6], [4, 6], [1, 2, 4, 5, 6]],    // ㅉ + 영
             '청': [[5, 6], [1, 2, 4, 5, 6]]          // ㅊ + 영
@@ -347,6 +355,19 @@ class BrailleTranslator {
 
             // 5. 한글 처리
             if (/[가-힣]/.test(char)) {
+                // 제44항: 숫자 뒤 혼동 방지 띄어쓰기
+                // 숫자 뒤에 "ㄴ, ㄷ, ㅁ, ㅋ, ㅌ, ㅍ, ㅎ"로 시작하거나 "운"인 경우 수표 재추가
+                const prevChar = text[i - 1];
+                if (prevChar && /[0-9]/.test(prevChar)) {
+                    const jamo = this.decompose(char);
+                    const confusingInitials = ['ㄴ', 'ㄷ', 'ㅁ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+                    // 혼동 문자인 경우 수표 재추가 (띄어쓰기 표현)
+                    if ((jamo && confusingInitials.includes(jamo.initial)) || char === '운') {
+                        result.push(this.numberIndicator);  // 수표 재추가로 띄어쓰기 표현
+                    }
+                }
+
                 this.processKorean(char, text, i, result);
                 continue;
             }
@@ -380,6 +401,7 @@ class BrailleTranslator {
         // 제13항: 가~하
         if (this.abbreviations[char]) {
             // 다음 글자가 모음이면 약자 사용 불가 (제14항)
+            // [붙임] "팠"처럼 "파" 약자 뒤에 받침이 있어도 약자 사용 불가
             const nextChar = text[index + 1];
             if (nextChar && /[ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ]/.test(nextChar)) {
                 // 약자 사용 불가, 일반 변환
@@ -397,6 +419,12 @@ class BrailleTranslator {
             } else {
                 result.push(dots);
             }
+            return 0;
+        }
+
+        // 제16항: 된소리 약자 (까, 싸, 껏)
+        if (this.tenseAbbreviations[char]) {
+            result.push(...this.tenseAbbreviations[char]);
             return 0;
         }
 
@@ -475,109 +503,6 @@ class BrailleTranslator {
         }
 
         return 0;
-    }
-
-    /**
-     * 점자를 한글 텍스트로 변환
-     * @param {Array} dotsArray - 점자 dots 배열
-     * @returns {string} 한글 텍스트
-     */
-    translateToKorean(dotsArray) {
-        let result = '';
-
-        if (!dotsArray || dotsArray.length === 0) {
-            return result;
-        }
-
-        let i = 0;
-        while (i < dotsArray.length) {
-            const dots = dotsArray[i];
-            const dotsStr = JSON.stringify(dots);
-
-            // 1. 수표 체크
-            if (dotsStr === JSON.stringify(this.numberIndicator)) {
-                i++;
-                // 숫자 읽기
-                while (i < dotsArray.length) {
-                    const numDotsStr = JSON.stringify(dotsArray[i]);
-                    const num = Object.keys(this.numbers).find(
-                        k => JSON.stringify(this.numbers[k]) === numDotsStr
-                    );
-                    if (num) {
-                        result += num;
-                        i++;
-                    } else {
-                        break;
-                    }
-                }
-                continue;
-            }
-
-            // 2. 문장부호 체크
-            const punct = Object.keys(this.punctuation).find(k => {
-                const pDots = this.punctuation[k];
-                if (Array.isArray(pDots[0])) {
-                    return JSON.stringify(pDots[0]) === dotsStr;
-                }
-                return JSON.stringify(pDots) === dotsStr;
-            });
-            if (punct) {
-                result += punct;
-                i++;
-                continue;
-            }
-
-            // 3. 약어 체크
-            const contraction = Object.keys(this.contractions).find(k => {
-                const cDots = this.contractions[k];
-                if (dotsArray.length > i + cDots.length - 1) {
-                    return cDots.every((d, idx) =>
-                        JSON.stringify(d) === JSON.stringify(dotsArray[i + idx])
-                    );
-                }
-                return false;
-            });
-            if (contraction) {
-                result += contraction;
-                i += this.contractions[contraction].length;
-                continue;
-            }
-
-            // 4. 약자 체크 (제13항, 제15항)
-            const abbr = Object.keys(this.abbreviations).find(
-                k => JSON.stringify(this.abbreviations[k]) === dotsStr
-            );
-            if (abbr) {
-                result += abbr;
-                i++;
-                continue;
-            }
-
-            const abbr2 = Object.keys(this.abbreviations2).find(k => {
-                const aDots = this.abbreviations2[k];
-                if (Array.isArray(aDots[0])) {
-                    return aDots.every((d, idx) =>
-                        JSON.stringify(d) === JSON.stringify(dotsArray[i + idx])
-                    );
-                }
-                return JSON.stringify(aDots) === dotsStr;
-            });
-            if (abbr2) {
-                result += abbr2;
-                const len = Array.isArray(this.abbreviations2[abbr2][0])
-                    ? this.abbreviations2[abbr2].length : 1;
-                i += len;
-                continue;
-            }
-
-            // 5. 일반 자모 조합 (단순 구현)
-            // 실제로는 복잡한 자모 조합 로직 필요
-            // 현재는 기본 매핑만 지원
-            result += '[점자]';
-            i++;
-        }
-
-        return result;
     }
 
     /**

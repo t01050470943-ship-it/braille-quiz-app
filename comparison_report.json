@@ -1,0 +1,23 @@
+{
+  "total_compared": 137,
+  "mismatches": [
+    {
+      "clause": "제11항",
+      "char": "구분표",
+      "md_dots": [
+        3,
+        6
+      ],
+      "js_dots": null
+    },
+    {
+      "clause": "제12항",
+      "char": "구분표",
+      "md_dots": [
+        3,
+        4
+      ],
+      "js_dots": null
+    }
+  ]
+}

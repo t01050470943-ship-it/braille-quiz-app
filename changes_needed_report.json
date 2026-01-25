@@ -1,0 +1,57 @@
+{
+  "total_clauses_with_changes": 1,
+  "total_changes": 4,
+  "changes": [
+    {
+      "clause": "제49항",
+      "changes": [
+        {
+          "type": "누락",
+          "char": "·",
+          "md_dots": [
+            4,
+            5,
+            6
+          ],
+          "js_dots": null,
+          "action": "추가 필요: { char: '·', dots: [4, 5, 6], name: '...' }"
+        },
+        {
+          "type": "누락",
+          "char": ":",
+          "md_dots": [
+            2,
+            5
+          ],
+          "js_dots": null,
+          "action": "추가 필요: { char: ':', dots: [2, 5], name: '...' }"
+        },
+        {
+          "type": "누락",
+          "char": "~",
+          "md_dots": [
+            [
+              5
+            ],
+            [
+              3,
+              6
+            ]
+          ],
+          "js_dots": null,
+          "action": "추가 필요: { char: '~', dots: [[5], [3, 6]], name: '...' }"
+        },
+        {
+          "type": "누락",
+          "char": "-",
+          "md_dots": [
+            3,
+            6
+          ],
+          "js_dots": null,
+          "action": "추가 필요: { char: '-', dots: [3, 6], name: '...' }"
+        }
+      ]
+    }
+  ]
+}
