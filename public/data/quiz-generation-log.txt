@@ -1,0 +1,201 @@
+
+=== 제1항: 첫소리로 쓰인 자음자 (초성) ===
+✗ 거리 -> 오류: translator.translate is not a function
+✗ 너비 -> 오류: translator.translate is not a function
+✗ 두더지 -> 오류: translator.translate is not a function
+✗ 리코더 -> 오류: translator.translate is not a function
+✗ 미소 -> 오류: translator.translate is not a function
+✗ 보리 -> 오류: translator.translate is not a function
+✗ 셔츠 -> 오류: translator.translate is not a function
+✗ 저고리 -> 오류: translator.translate is not a function
+✗ 추수 -> 오류: translator.translate is not a function
+✗ 커피 -> 오류: translator.translate is not a function
+✗ 터무니 -> 오류: translator.translate is not a function
+✗ 피리 -> 오류: translator.translate is not a function
+✗ 호수 -> 오류: translator.translate is not a function
+
+=== 제2항: 된소리 표기 ===
+✗ 꾸러미 -> 오류: translator.translate is not a function
+✗ 뚜꺼비 -> 오류: translator.translate is not a function
+✗ 뚜껑 -> 오류: translator.translate is not a function
+✗ 허리띠 -> 오류: translator.translate is not a function
+✗ 뻐꾸기 -> 오류: translator.translate is not a function
+✗ 꼬삐 -> 오류: translator.translate is not a function
+✗ 쓰기 -> 오류: translator.translate is not a function
+✗ 아저씨 -> 오류: translator.translate is not a function
+✗ 쭈르르 -> 오류: translator.translate is not a function
+✗ 버찌 -> 오류: translator.translate is not a function
+
+=== 제3항: 받침으로 쓰인 자음자 (종성) ===
+✗ 국보 -> 오류: translator.translate is not a function
+✗ 윤리 -> 오류: translator.translate is not a function
+✗ 싣고 -> 오류: translator.translate is not a function
+✗ 놀이 -> 오류: translator.translate is not a function
+✗ 솜씨 -> 오류: translator.translate is not a function
+✗ 넙치 -> 오류: translator.translate is not a function
+✗ 놋그릇 -> 오류: translator.translate is not a function
+✗ 향기 -> 오류: translator.translate is not a function
+✗ 엊저녁 -> 오류: translator.translate is not a function
+✗ 윷놀이 -> 오류: translator.translate is not a function
+✗ 부엌 -> 오류: translator.translate is not a function
+✗ 겉보리 -> 오류: translator.translate is not a function
+✗ 앞집 -> 오류: translator.translate is not a function
+✗ 히읗 -> 오류: translator.translate is not a function
+
+=== 제4항: 쌍받침 ===
+✗ 겪다 -> 오류: translator.translate is not a function
+✗ 묶음 -> 오류: translator.translate is not a function
+✗ 있다 -> 오류: translator.translate is not a function
+✗ 보았다 -> 오류: translator.translate is not a function
+
+=== 제5항: 겹받침 ===
+✗ 품삯 -> 오류: translator.translate is not a function
+✗ 앉다 -> 오류: translator.translate is not a function
+✗ 않다 -> 오류: translator.translate is not a function
+✗ 읽다 -> 오류: translator.translate is not a function
+✗ 옮기다 -> 오류: translator.translate is not a function
+✗ 얇다 -> 오류: translator.translate is not a function
+✗ 외곬 -> 오류: translator.translate is not a function
+✗ 핥다 -> 오류: translator.translate is not a function
+✗ 옳다 -> 오류: translator.translate is not a function
+✗ 없다 -> 오류: translator.translate is not a function
+
+=== 제6항: 기본 모음자 ===
+✗ 아리랑 -> 오류: translator.translate is not a function
+✗ 고양이 -> 오류: translator.translate is not a function
+✗ 엄지 -> 오류: translator.translate is not a function
+✗ 무역 -> 오류: translator.translate is not a function
+✗ 호랑이 -> 오류: translator.translate is not a function
+✗ 무용 -> 오류: translator.translate is not a function
+✗ 국수 -> 오류: translator.translate is not a function
+✗ 법률 -> 오류: translator.translate is not a function
+✗ 특기 -> 오류: translator.translate is not a function
+✗ 코끼리 -> 오류: translator.translate is not a function
+
+=== 제7항: 그 밖의 모음자 (복합 모음) ===
+✗ 매미 -> 오류: translator.translate is not a function
+✗ 애기 -> 오류: translator.translate is not a function
+✗ 헤엄 -> 오류: translator.translate is not a function
+✗ 지혜 -> 오류: translator.translate is not a function
+✗ 광주리 -> 오류: translator.translate is not a function
+✗ 쾌활 -> 오류: translator.translate is not a function
+✗ 피뢰침 -> 오류: translator.translate is not a function
+✗ 권리 -> 오류: translator.translate is not a function
+✗ 우렁쉥이 -> 오류: translator.translate is not a function
+✗ 쉼터 -> 오류: translator.translate is not a function
+✗ 무늬 -> 오류: translator.translate is not a function
+
+=== 제11항: 모음자 "예" 가운뎃점 ===
+✗ 아예 -> 오류: translator.translate is not a function
+✗ 도예 -> 오류: translator.translate is not a function
+✗ 뭐예요 -> 오류: translator.translate is not a function
+✗ 서예 -> 오류: translator.translate is not a function
+
+=== 제12항: 모음자 "애" 구분표 ===
+✗ 야애 -> 오류: translator.translate is not a function
+✗ 소화액 -> 오류: translator.translate is not a function
+✗ 수액 -> 오류: translator.translate is not a function
+✗ 파워앰프 -> 오류: translator.translate is not a function
+
+=== 제13항: 약자 (가~하) ===
+✗ 가지 -> 오류: translator.translate is not a function
+✗ 나비 -> 오류: translator.translate is not a function
+✗ 다리미 -> 오류: translator.translate is not a function
+✗ 라디오 -> 오류: translator.translate is not a function
+✗ 고구마 -> 오류: translator.translate is not a function
+✗ 바느질 -> 오류: translator.translate is not a function
+✗ 사위 -> 오류: translator.translate is not a function
+✗ 아궁이 -> 오류: translator.translate is not a function
+✗ 도자기 -> 오류: translator.translate is not a function
+✗ 기차 -> 오류: translator.translate is not a function
+✗ 카메라 -> 오류: translator.translate is not a function
+✗ 실타래 -> 오류: translator.translate is not a function
+✗ 파도 -> 오류: translator.translate is not a function
+✗ 하루 -> 오류: translator.translate is not a function
+
+=== 제14항: 약자 예외 규칙 ===
+✗ 나이 -> 오류: translator.translate is not a function
+✗ 다음 -> 오류: translator.translate is not a function
+✗ 마우스 -> 오류: translator.translate is not a function
+✗ 바위 -> 오류: translator.translate is not a function
+✗ 자아 -> 오류: translator.translate is not a function
+✗ 카이로 -> 오류: translator.translate is not a function
+✗ 넥타이 -> 오류: translator.translate is not a function
+✗ 파이프 -> 오류: translator.translate is not a function
+✗ 하얀 -> 오류: translator.translate is not a function
+
+=== 제15항: 약자 (억~것) ===
+✗ 억새 -> 오류: translator.translate is not a function
+✗ 추억 -> 오류: translator.translate is not a function
+✗ 언어 -> 오류: translator.translate is not a function
+✗ 격언 -> 오류: translator.translate is not a function
+✗ 얼룩 -> 오류: translator.translate is not a function
+✗ 하얼빈 -> 오류: translator.translate is not a function
+✗ 연필 -> 오류: translator.translate is not a function
+✗ 자연 -> 오류: translator.translate is not a function
+✗ 열매 -> 오류: translator.translate is not a function
+✗ 가열 -> 오류: translator.translate is not a function
+✗ 옥수수 -> 오류: translator.translate is not a function
+✗ 가옥 -> 오류: translator.translate is not a function
+✗ 온도 -> 오류: translator.translate is not a function
+✗ 오리온 -> 오류: translator.translate is not a function
+
+=== 제16항: 된소리 약자 ===
+✗ 까치 -> 오류: translator.translate is not a function
+✗ 깡충깡충 -> 오류: translator.translate is not a function
+✗ 싸리나무 -> 오류: translator.translate is not a function
+✗ 쌍둥이 -> 오류: translator.translate is not a function
+✗ 힘껏 -> 오류: translator.translate is not a function
+✗ 마음껏 -> 오류: translator.translate is not a function
+
+=== 제17항: 약자 (성~청) ===
+✗ 성공 -> 오류: translator.translate is not a function
+✗ 성인 -> 오류: translator.translate is not a function
+✗ 정말 -> 오류: translator.translate is not a function
+✗ 청소년 -> 오류: translator.translate is not a function
+
+=== 제18항: 약어 (접속사) ===
+✗ 그래서 -> 오류: translator.translate is not a function
+✗ 그러나 -> 오류: translator.translate is not a function
+✗ 그러면 -> 오류: translator.translate is not a function
+✗ 그러므로 -> 오류: translator.translate is not a function
+✗ 그런데 -> 오류: translator.translate is not a function
+✗ 그리고 -> 오류: translator.translate is not a function
+✗ 그리하여 -> 오류: translator.translate is not a function
+
+=== 제28항: 로마자 소문자 ===
+✗ book -> 오류: translator.translate is not a function
+✗ happy -> 오류: translator.translate is not a function
+✗ moon -> 오류: translator.translate is not a function
+✗ purple -> 오류: translator.translate is not a function
+✗ tea -> 오류: translator.translate is not a function
+✗ welcome -> 오류: translator.translate is not a function
+
+=== 제29항: 로마자 표지 ===
+✗ Hello -> 오류: translator.translate is not a function
+✗ NEW YORK -> 오류: translator.translate is not a function
+✗ McDonald -> 오류: translator.translate is not a function
+
+=== 제40항: 숫자 표기 ===
+✗ 10 -> 오류: translator.translate is not a function
+✗ 99 -> 오류: translator.translate is not a function
+✗ 375 -> 오류: translator.translate is not a function
+
+=== 제41항: 자릿점 표기 ===
+✗ 9,375 -> 오류: translator.translate is not a function
+✗ 57,000 -> 오류: translator.translate is not a function
+
+=== 제43항: 수표 재사용 ===
+✗ 3·1 -> 오류: translator.translate is not a function
+✗ 2:1 -> 오류: translator.translate is not a function
+
+=== 제44항: 숫자 뒤 띄어쓰기 ===
+✗ 1가 -> 오류: translator.translate is not a function
+✗ 2권 -> 오류: translator.translate is not a function
+✗ 3반 -> 오류: translator.translate is not a function
+✗ 5월 -> 오류: translator.translate is not a function
+
+=== 제49항: 문장 부호 ===
+✗ 안녕하세요. -> 오류: translator.translate is not a function
+✗ 무엇? -> 오류: translator.translate is not a function
+✗ 와! -> 오류: translator.translate is not a function
