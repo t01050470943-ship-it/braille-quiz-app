@@ -2212,18 +2212,6 @@
       "verified": false
     },
     {
-      "id": "punct_006",
-      "question": "선생님은 \"공부하세요\"라고 말했다.",
-      "answer": "선생님은 \"공부하세요\"라고 말했다.",
-      "braille": [],
-      "dots": [],
-      "clause": "제49항",
-      "category": "큰따옴표_인용",
-      "difficulty": "어려움",
-      "hint": "긴 문장 속 인용문",
-      "verified": false
-    },
-    {
       "id": "punct_007",
       "question": "\"어디 가니?\"",
       "answer": "\"어디 가니?\"",
