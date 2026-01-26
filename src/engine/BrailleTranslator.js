@@ -401,13 +401,74 @@ class BrailleTranslator {
         // 제13항: 가~하
         if (this.abbreviations[char]) {
             // 다음 글자가 모음이면 약자 사용 불가 (제14항)
-            // [붙임] "팠"처럼 "파" 약자 뒤에 받침이 있어도 약자 사용 불가
             const nextChar = text[index + 1];
             if (nextChar && /[ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ]/.test(nextChar)) {
                 // 약자 사용 불가, 일반 변환
             } else {
                 result.push(this.abbreviations[char]);
                 return 0;
+            }
+        }
+
+        // 2-2. 받침이 있는 약자 처리 (제13항 [붙임])
+        // "반", "밤", "짤" 등 - 초성+중성이 제13항 약자이고 받침이 있는 경우
+        let jamoCheck = this.decompose(char);
+        if (jamoCheck && jamoCheck.final) {
+            // 초성+중성 조합이 제13항 약자로 있는지 확인
+            const baseChar = this.compose(jamoCheck.initial, jamoCheck.medial, '');
+            if (this.abbreviations[baseChar]) {
+                // 약자 + 받침으로 처리
+                result.push(this.abbreviations[baseChar]);
+
+                // 받침 처리
+                if (this.twinFinals[jamoCheck.final]) {
+                    const fDots = this.twinFinals[jamoCheck.final];
+                    if (Array.isArray(fDots[0])) {
+                        result.push(...fDots);
+                    } else {
+                        result.push(fDots);
+                    }
+                } else if (this.clusterFinals[jamoCheck.final]) {
+                    result.push(...this.clusterFinals[jamoCheck.final]);
+                } else if (this.finalConsonants[jamoCheck.final]) {
+                    result.push(this.finalConsonants[jamoCheck.final]);
+                }
+
+                return 0;
+            }
+
+            // 2-3. 된소리 + 약자 + 받침 처리 (제13항 [붙임] - 찹쌀, 짤 등)
+            // 된소리 초성 제거하고 기본 초성으로 확인
+            const tenseToBase = {
+                'ㄲ': 'ㄱ', 'ㄸ': 'ㄷ', 'ㅃ': 'ㅂ',
+                'ㅆ': 'ㅅ', 'ㅉ': 'ㅈ'
+            };
+
+            if (tenseToBase[jamoCheck.initial]) {
+                const baseInitial = tenseToBase[jamoCheck.initial];
+                const baseCharTense = this.compose(baseInitial, jamoCheck.medial, '');
+
+                if (this.abbreviations[baseCharTense]) {
+                    // 된소리표 + 약자 + 받침으로 처리
+                    result.push(this.tenseMark); // 된소리표
+                    result.push(this.abbreviations[baseCharTense]);
+
+                    // 받침 처리
+                    if (this.twinFinals[jamoCheck.final]) {
+                        const fDots = this.twinFinals[jamoCheck.final];
+                        if (Array.isArray(fDots[0])) {
+                            result.push(...fDots);
+                        } else {
+                            result.push(fDots);
+                        }
+                    } else if (this.clusterFinals[jamoCheck.final]) {
+                        result.push(...this.clusterFinals[jamoCheck.final]);
+                    } else if (this.finalConsonants[jamoCheck.final]) {
+                        result.push(this.finalConsonants[jamoCheck.final]);
+                    }
+
+                    return 0;
+                }
             }
         }
 
@@ -527,6 +588,30 @@ class BrailleTranslator {
             medial: medials[medialIndex],
             final: finals[finalIndex]
         };
+    }
+
+    /**
+     * 초성, 중성, 종성으로 한글 음절 조합
+     * @param {string} initial - 초성
+     * @param {string} medial - 중성
+     * @param {string} final - 종성 (optional, 빈 문자열이면 받침 없음)
+     * @returns {string|null} 조합된 한글 음절 (실패시 null)
+     */
+    compose(initial, medial, final = '') {
+        const initials = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+        const medials = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
+        const finals = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+        const initialIndex = initials.indexOf(initial);
+        const medialIndex = medials.indexOf(medial);
+        const finalIndex = finals.indexOf(final || '');
+
+        if (initialIndex === -1 || medialIndex === -1 || finalIndex === -1) {
+            return null;
+        }
+
+        const code = 0xAC00 + (initialIndex * 588) + (medialIndex * 28) + finalIndex;
+        return String.fromCharCode(code);
     }
 }
 
