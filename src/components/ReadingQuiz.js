@@ -299,6 +299,9 @@ class ReadingQuiz {
     const duration = Math.floor((this.session.endTime - this.session.startTime) / 1000);
     const accuracy = Math.round((this.session.correctCount / this.session.questions.length) * 100);
 
+    // WeaknessRadar에 결과 기록
+    this.recordToWeaknessRadar();
+
     this.container.innerHTML = `
       <div class="reading-quiz">
         <nav class="quiz-nav">
@@ -341,6 +344,55 @@ class ReadingQuiz {
     this.container.querySelector('.nav-home-btn').addEventListener('click', () => {
       window.location.reload();
     });
+  }
+
+  /**
+   * WeaknessRadar에 결과 기록
+   */
+  recordToWeaknessRadar() {
+    // localStorage에서 현재 통계 로드
+    const saved = localStorage.getItem('braille_stats');
+    const stats = saved ? JSON.parse(saved) : {
+      '자음': { total: 0, correct: 0 },
+      '모음': { total: 0, correct: 0 },
+      '약자': { total: 0, correct: 0 },
+      '약어': { total: 0, correct: 0 },
+      '숫자': { total: 0, correct: 0 },
+      '로마자': { total: 0, correct: 0 },
+      '부호': { total: 0, correct: 0 }
+    };
+
+    // 각 답변의 카테고리를 분석하여 통계 업데이트
+    this.session.answers.forEach(answer => {
+      const category = this.mapToMainCategory(answer.question.category);
+      if (stats[category]) {
+        stats[category].total++;
+        if (answer.isCorrect) {
+          stats[category].correct++;
+        }
+      }
+    });
+
+    // 저장
+    localStorage.setItem('braille_stats', JSON.stringify(stats));
+  }
+
+  /**
+   * 문제은행 카테고리를 메인 카테고리로 매핑
+   */
+  mapToMainCategory(bankCategory) {
+    if (!bankCategory) return '부호';
+
+    const category = bankCategory.toLowerCase();
+
+    if (category.includes('자음')) return '자음';
+    if (category.includes('모음')) return '모음';
+    if (category.includes('약자')) return '약자';
+    if (category.includes('약어')) return '약어';
+    if (category.includes('숫자')) return '숫자';
+    if (category.includes('로마자')) return '로마자';
+
+    return '부호';
   }
 
   getStyles() {
