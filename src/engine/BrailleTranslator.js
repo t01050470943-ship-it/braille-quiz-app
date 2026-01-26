@@ -356,15 +356,15 @@ class BrailleTranslator {
             // 5. 한글 처리
             if (/[가-힣]/.test(char)) {
                 // 제44항: 숫자 뒤 혼동 방지 띄어쓰기
-                // 숫자 뒤에 "ㄴ, ㄷ, ㅁ, ㅋ, ㅌ, ㅍ, ㅎ"로 시작하거나 "운"인 경우 수표 재추가
+                // 숫자 뒤에 "ㄴ, ㄷ, ㅁ, ㅋ, ㅌ, ㅍ, ㅎ"로 시작하거나 "운"인 경우 띄어쓰기 추가
                 const prevChar = text[i - 1];
                 if (prevChar && /[0-9]/.test(prevChar)) {
                     const jamo = this.decompose(char);
                     const confusingInitials = ['ㄴ', 'ㄷ', 'ㅁ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
 
-                    // 혼동 문자인 경우 수표 재추가 (띄어쓰기 표현)
+                    // 혼동 문자인 경우 빈 셀 추가 (띄어쓰기 표현)
                     if ((jamo && confusingInitials.includes(jamo.initial)) || char === '운') {
-                        result.push(this.numberIndicator);  // 수표 재추가로 띄어쓰기 표현
+                        result.push([]);  // 빈 셀로 띄어쓰기 명시적 표현
                     }
                 }
 
