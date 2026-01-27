@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrailleTranslator QA 테스트</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #252526;
+            border-radius: 8px;
+        }
+
+        .test-case {
+            margin: 15px 0;
+            padding: 15px;
+            background: #2d2d30;
+            border-left: 4px solid #007acc;
+        }
+
+        .pass {
+            border-left-color: #4ec9b0;
+        }
+
+        .fail {
+            border-left-color: #f48771;
+        }
+
+        h1 {
+            color: #4ec9b0;
+        }
+
+        h2 {
+            color: #569cd6;
+            margin-top: 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .status.pass {
+            background: #4ec9b0;
+            color: #000;
+        }
+
+        .status.fail {
+            background: #f48771;
+            color: #000;
+        }
+
+        pre {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 BrailleTranslator.js QA 검수 테스트</h1>
+    <div id="output"></div>
+
+    <script type="module">
+        import BrailleTranslator from './src/engine/BrailleTranslator.js';
+
+        const translator = new BrailleTranslator();
+        const output = document.getElementById('output');
+
+        function addSection(title) {
+            const section = document.createElement('div');
+            section.className = 'test-section';
+            section.innerHTML = `<h2>${title}</h2>`;
+            output.appendChild(section);
+            return section;
+        }
+
+        function addTestCase(section, testData) {
+            const testCase = document.createElement('div');
+            testCase.className = `test-case ${testData.pass ? 'pass' : 'fail'}`;
+            testCase.innerHTML = `
+                <div><strong>${testData.title}</strong> <span class="status ${testData.pass ? 'pass' : 'fail'}">${testData.pass ? '✅ PASS' : '❌ FAIL'}</span></div>
+                ${testData.details ? `<div style="margin-top: 10px;">${testData.details}</div>` : ''}
+                ${testData.result ? `<pre>${testData.result}</pre>` : ''}
+            `;
+            section.appendChild(testCase);
+        }
+
+        // ===== 1. 제5항: 겹받침 테스트 =====
+        const section1 = addSection('[1] §5 겹받침 데이터셋 테스트');
+
+        const clusterTests = [
+            { word: '많다', cluster: 'ㄶ' },
+            { word: '외곬', cluster: 'ㄽ' },
+            { word: '핥다', cluster: 'ㄾ' },
+            { word: '읊다', cluster: 'ㄿ' },
+            { word: '옳다', cluster: 'ㅀ' },
+            { word: '없다', cluster: 'ㅄ' }
+        ];
+
+        clusterTests.forEach(test => {
+            const result = translator.translateToBraille(test.word);
+            const hasClusterData = translator.clusterFinals[test.cluster] !== undefined;
+
+            addTestCase(section1, {
+                title: `${test.cluster} - "${test.word}"`,
+                pass: hasClusterData,
+                details: `데이터 등록: ${hasClusterData ? '있음' : '없음'}`,
+                result: `점형: ${JSON.stringify(result)}`
+            });
+        });
+
+        // ===== 2. 제18항: 약어 앞 예외 로직 테스트 =====
+        const section2 = addSection('[2] §18 약어 앞 예외 로직 테스트');
+
+        const contractionTests = [
+            {
+                input: '그리고',
+                shouldUseContraction: true,
+                reason: '앞에 글자 없음 → 약어 사용 O'
+            },
+            {
+                input: '오그리고',
+                shouldUseContraction: false,
+                reason: '앞에 "오" 있음 → 약어 사용 X'
+            },
+            {
+                input: '우그리고',
+                shouldUseContraction: false,
+                reason: '앞에 "우" 있음 → 약어 사용 X'
+            }
+        ];
+
+        contractionTests.forEach(test => {
+            const result = translator.translateToBraille(test.input);
+            const usedContraction = result.length <= 2;
+            const passed = usedContraction === test.shouldUseContraction;
+
+            addTestCase(section2, {
+                title: `"${test.input}"`,
+                pass: passed,
+                details: `
+                    약어 사용: ${usedContraction ? 'YES' : 'NO'} (예상: ${test.shouldUseContraction ? 'YES' : 'NO'})<br>
+                    점형 개수: ${result.length}<br>
+                    이유: ${test.reason}
+                `,
+                result: `점형: ${JSON.stringify(result)}`
+            });
+        });
+
+        // ===== 3. 제43항: 수표 재사용 테스트 =====
+        const section3 = addSection('[3] §43 특수 기호 뒤 수표 재사용 테스트');
+
+        const numberTests = [
+            { input: '3·1', description: '가운뎃점 뒤 수표' },
+            { input: '2:1', description: '쌍점 뒤 수표' },
+            { input: '1-2', description: '붙임표 뒤 수표' }
+        ];
+
+        const numberIndicator = [3, 4, 5, 6];
+        const isNumberIndicator = (dots) => {
+            return JSON.stringify(dots) === JSON.stringify(numberIndicator);
+        };
+
+        numberTests.forEach(test => {
+            const result = translator.translateToBraille(test.input);
+
+            const indicatorPositions = [];
+            result.forEach((dots, idx) => {
+                if (isNumberIndicator(dots)) {
+                    indicatorPositions.push(idx);
+                }
+            });
+
+            const hasReusedIndicator = indicatorPositions.length >= 2;
+
+            addTestCase(section3, {
+                title: `"${test.input}" (${test.description})`,
+                pass: hasReusedIndicator,
+                details: `
+                    수표 위치: ${JSON.stringify(indicatorPositions)}<br>
+                    수표 개수: ${indicatorPositions.length} (예상: 2개)
+                `,
+                result: `점형: ${JSON.stringify(result)}`
+            });
+        });
+
+    </script>
+</body>
+
+</html>

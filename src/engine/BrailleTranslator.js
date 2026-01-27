@@ -54,13 +54,19 @@ class BrailleTranslator {
             'ㅆ': [3, 4]  // 약자
         };
 
-        // 제5항: 겹받침
+        // 제5항: 겹받침 (11개 전체)
         this.clusterFinals = {
-            'ㄳ': [[1], [3]],
-            'ㄵ': [[2, 5], [1, 3]],
-            'ㄺ': [[2], [1]],
-            'ㄻ': [[2], [2, 6]],
-            'ㄼ': [[2], [1, 2]]
+            'ㄳ': [[1], [3]],           // ㄱ + ㅅ
+            'ㄵ': [[2, 5], [1, 3]],     // ㄴ + ㅈ
+            'ㄶ': [[2, 5], [3, 5, 6]],  // ㄴ + ㅎ
+            'ㄺ': [[2], [1]],           // ㄹ + ㄱ
+            'ㄻ': [[2], [2, 6]],        // ㄹ + ㅁ
+            'ㄼ': [[2], [1, 2]],        // ㄹ + ㅂ
+            'ㄽ': [[2], [3]],           // ㄹ + ㅅ
+            'ㄾ': [[2], [2, 3, 6]],     // ㄹ + ㅌ
+            'ㄿ': [[2], [2, 5, 6]],     // ㄹ + ㅍ
+            'ㅀ': [[2], [3, 5, 6]],     // ㄹ + ㅎ
+            'ㅄ': [[1, 2], [3]]         // ㅂ + ㅅ
         };
 
         // 제6항: 기본 모음자
@@ -247,8 +253,15 @@ class BrailleTranslator {
 
             // 2. 숫자 처리 (제40항, 제41항, 제43항, 제44항)
             if (/[0-9]/.test(char)) {
-                // 숫자 시작 시 수표 추가
-                if (i === 0 || !/[0-9,]/.test(text[i - 1])) {
+                const prevChar = text[i - 1];
+
+                // 제43항: 특수 기호(·, :, -, ~) 뒤에는 반드시 수표 재사용
+                const needsNumberIndicator =
+                    i === 0 ||
+                    !/[0-9,]/.test(prevChar) ||
+                    (prevChar && ['·', ':', '-', '~'].includes(prevChar));
+
+                if (needsNumberIndicator) {
                     result.push(this.numberIndicator);
                 }
 
@@ -368,7 +381,10 @@ class BrailleTranslator {
                     }
                 }
 
-                this.processKorean(char, text, i, result);
+                const skipChars = this.processKorean(char, text, i, result);
+                if (skipChars > 0) {
+                    i += skipChars;  // 약어 사용 시 건너뛸 글자 수만큼 인덱스 증가
+                }
                 continue;
             }
 

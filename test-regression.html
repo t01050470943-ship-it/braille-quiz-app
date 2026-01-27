@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Bank 회귀 테스트</title>
+    <style>
+        body {
+            font-family: 'Consolas', monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-size: 13px;
+        }
+
+        .header {
+            background: #252526;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: #2d2d30;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #007acc;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4ec9b0;
+        }
+
+        .stat-label {
+            color: #858585;
+            margin-top: 5px;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #252526;
+            border-radius: 8px;
+        }
+
+        .error-item {
+            margin: 10px 0;
+            padding: 15px;
+            background: #3c1f1e;
+            border-left: 4px solid #f48771;
+            border-radius: 4px;
+        }
+
+        .error-word {
+            font-size: 16px;
+            font-weight: bold;
+            color: #f48771;
+            margin-bottom: 8px;
+        }
+
+        .error-details {
+            font-size: 12px;
+            color: #858585;
+            margin-top: 5px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 30px;
+            background: #2d2d30;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #007acc, #4ec9b0);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #007acc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background: #005a9e;
+        }
+
+        button:disabled {
+            background: #3c3c3c;
+            cursor: not-allowed;
+        }
+
+        .success {
+            color: #4ec9b0;
+        }
+
+        .warning {
+            color: #dcdcaa;
+        }
+
+        .error {
+            color: #f48771;
+        }
+
+        h1 {
+            color: #4ec9b0;
+            margin: 0;
+        }
+
+        h2 {
+            color: #569cd6;
+            margin-top: 0;
+        }
+
+        .clause-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #264f78;
+            color: #9cdcfe;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>📊 Quiz Bank 회귀 테스트</h1>
+        <p>BrailleTranslator.js로 전체 quiz-bank 데이터 검증</p>
+    </div>
+
+    <div class="controls">
+        <button id="btn-test-basic">기초 테스트</button>
+        <button id="btn-test-standard">기본 테스트</button>
+        <button id="btn-test-advanced">심화 테스트</button>
+        <button id="btn-test-all">전체 테스트</button>
+    </div>
+
+    <div class="stats" id="stats"></div>
+    <div class="progress">
+        <div class="progress-bar" id="progress">0%</div>
+    </div>
+
+    <div id="results"></div>
+
+    <script type="module">
+        import BrailleTranslator from './src/engine/BrailleTranslator.js';
+
+        const translator = new BrailleTranslator();
+        const stats = document.getElementById('stats');
+        const progress = document.getElementById('progress');
+        const results = document.getElementById('results');
+
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            errors: []
+        };
+
+        function updateStats() {
+            const passRate = testResults.total > 0
+                ? ((testResults.passed / testResults.total) * 100).toFixed(1)
+                : 0;
+
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${testResults.total}</div>
+                    <div class="stat-label">전체 테스트</div>
+                </div>
+                <div class="stat-card" style="border-left-color: #4ec9b0;">
+                    <div class="stat-value success">${testResults.passed}</div>
+                    <div class="stat-label">성공</div>
+                </div>
+                <div class="stat-card" style="border-left-color: #f48771;">
+                    <div class="stat-value error">${testResults.failed}</div>
+                    <div class="stat-label">실패</div>
+                </div>
+                <div class="stat-card" style="border-left-color: #dcdcaa;">
+                    <div class="stat-value warning">${passRate}%</div>
+                    <div class="stat-label">통과율</div>
+                </div>
+            `;
+        }
+
+        function updateProgress(current, total) {
+            const percent = ((current / total) * 100).toFixed(0);
+            progress.style.width = percent + '%';
+            progress.textContent = `${current} / ${total} (${percent}%)`;
+        }
+
+        async function testQuizBank(difficulty) {
+            testResults = { total: 0, passed: 0, failed: 0, errors: [] };
+            results.innerHTML = '';
+
+            const fileName = `data/quiz-bank-${difficulty}.json`;
+
+            try {
+                const response = await fetch(fileName);
+                const data = await response.json();
+
+                // reading과 writing 문항 모두 테스트
+                const allQuestions = [...(data.reading || []), ...(data.writing || [])];
+                testResults.total = allQuestions.length;
+
+                for (let i = 0; i < allQuestions.length; i++) {
+                    const quiz = allQuestions[i];
+                    const word = quiz.question || quiz.answer;
+
+                    if (!word) continue;
+
+                    try {
+                        // 점자로 변환 시도
+                        const brailleResult = translator.translateToBraille(word);
+
+                        // 변환이 성공하면 PASS
+                        if (brailleResult && brailleResult.length > 0) {
+                            testResults.passed++;
+                        } else {
+                            // 빈 결과면 FAIL
+                            testResults.failed++;
+                            testResults.errors.push({
+                                word: word,
+                                clause: quiz.clause || 'N/A',
+                                category: quiz.category || 'N/A',
+                                error: '점자 변환 결과가 비어있음',
+                                result: brailleResult
+                            });
+                        }
+                    } catch (error) {
+                        // 변환 중 오류 발생
+                        testResults.failed++;
+                        testResults.errors.push({
+                            word: word,
+                            clause: quiz.clause || 'N/A',
+                            category: quiz.category || 'N/A',
+                            error: error.message,
+                            result: null
+                        });
+                    }
+
+                    // 진행률 업데이트 (매 10개마다)
+                    if (i % 10 === 0 || i === allQuestions.length - 1) {
+                        updateProgress(i + 1, allQuestions.length);
+                        updateStats();
+                        await new Promise(resolve => setTimeout(resolve, 0)); // UI 업데이트 허용
+                    }
+                }
+
+                // 결과 표시
+                displayResults(difficulty);
+
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="test-section">
+                        <h2 class="error">파일 로딩 오류</h2>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayResults(difficulty) {
+            const section = document.createElement('div');
+            section.className = 'test-section';
+
+            const status = testResults.failed === 0 ? '✅ 모든 테스트 통과' : `⚠️ ${testResults.failed}개 오류 발견`;
+            const statusClass = testResults.failed === 0 ? 'success' : 'warning';
+
+            section.innerHTML = `
+                <h2>${difficulty} 난이도 테스트 결과</h2>
+                <p class="${statusClass}">${status}</p>
+            `;
+
+            if (testResults.errors.length > 0) {
+                const errorSection = document.createElement('div');
+                errorSection.innerHTML = '<h3 style="color: #f48771;">오류 목록</h3>';
+
+                testResults.errors.forEach(err => {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-item';
+                    errorDiv.innerHTML = `
+                        <div class="error-word">"${err.word}"</div>
+                        <div>
+                            <span class="clause-tag">${err.clause}</span>
+                            <span class="clause-tag">${err.category}</span>
+                        </div>
+                        <div class="error-details">오류: ${err.error}</div>
+                        ${err.result ? `<div class="error-details">결과: ${JSON.stringify(err.result)}</div>` : ''}
+                    `;
+                    errorSection.appendChild(errorDiv);
+                });
+
+                section.appendChild(errorSection);
+            }
+
+            results.appendChild(section);
+        }
+
+        async function testAll() {
+            for (const difficulty of ['basic', 'standard', 'advanced']) {
+                await testQuizBank(difficulty);
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        // 이벤트 리스너
+        document.getElementById('btn-test-basic').addEventListener('click', () => testQuizBank('basic'));
+        document.getElementById('btn-test-standard').addEventListener('click', () => testQuizBank('standard'));
+        document.getElementById('btn-test-advanced').addEventListener('click', () => testQuizBank('advanced'));
+        document.getElementById('btn-test-all').addEventListener('click', testAll);
+    </script>
+</body>
+
+</html>
