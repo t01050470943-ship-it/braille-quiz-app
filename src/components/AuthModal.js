@@ -4,36 +4,36 @@
  */
 
 class AuthModal {
-    constructor(containerId, onAuthCallback) {
-        this.container = document.querySelector(containerId);
-        this.onAuthCallback = onAuthCallback;
-        this.showNotice = true;
-        this.agreed = false;
-        this.password = '';
-        this.CORRECT_PASSWORD = '특수교육';
+  constructor(containerId, onAuthCallback) {
+    this.container = document.querySelector(containerId);
+    this.onAuthCallback = onAuthCallback;
+    this.showNotice = true;
+    this.agreed = false;
+    this.password = '';
+    this.CORRECT_PASSWORD = '특수';
+  }
+
+  init() {
+    // localStorage에서 인증 상태 확인
+    const hasAgreed = localStorage.getItem('braille_notice_agreed') === 'true';
+    const savedPassword = localStorage.getItem('braille_password');
+
+    // 이미 인증된 사용자는 바로 메인 앱 표시
+    if (hasAgreed && savedPassword === this.CORRECT_PASSWORD) {
+      this.onAuthCallback();
+      return;
     }
 
-    init() {
-        // localStorage에서 인증 상태 확인
-        const hasAgreed = localStorage.getItem('braille_notice_agreed') === 'true';
-        const savedPassword = localStorage.getItem('braille_password');
-
-        // 이미 인증된 사용자는 바로 메인 앱 표시
-        if (hasAgreed && savedPassword === this.CORRECT_PASSWORD) {
-            this.onAuthCallback();
-            return;
-        }
-
-        // 동의 여부에 따라 초기 화면 결정
-        if (hasAgreed) {
-            this.showNotice = false;
-        }
-
-        this.render();
+    // 동의 여부에 따라 초기 화면 결정
+    if (hasAgreed) {
+      this.showNotice = false;
     }
 
-    render() {
-        this.container.innerHTML = `
+    this.render();
+  }
+
+  render() {
+    this.container.innerHTML = `
       <div class="auth-overlay">
         <div class="auth-modal">
           <!-- 로고 이미지 -->
@@ -46,11 +46,11 @@ class AuthModal {
       </div>
     `;
 
-        this.attachEventListeners();
-    }
+    this.attachEventListeners();
+  }
 
-    renderNoticeScreen() {
-        return `
+  renderNoticeScreen() {
+    return `
       <div class="notice-content">
         <h2>⚠️ Caution</h2>
         <div class="notice-text">
@@ -70,10 +70,10 @@ class AuthModal {
         </button>
       </div>
     `;
-    }
+  }
 
-    renderPasswordScreen() {
-        return `
+  renderPasswordScreen() {
+    return `
       <div class="password-content">
         <h2>🔐 비밀번호 입력</h2>
         <p class="password-hint">
@@ -99,63 +99,63 @@ class AuthModal {
         </form>
       </div>
     `;
+  }
+
+  attachEventListeners() {
+    if (this.showNotice) {
+      const checkbox = document.getElementById('agree-checkbox');
+      const confirmBtn = document.getElementById('notice-confirm-btn');
+
+      checkbox.addEventListener('change', (e) => {
+        this.agreed = e.target.checked;
+        confirmBtn.disabled = !this.agreed;
+      });
+
+      confirmBtn.addEventListener('click', () => {
+        this.handleAgree();
+      });
+    } else {
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const errorMsg = document.getElementById('error-message');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handlePasswordSubmit(input.value, errorMsg);
+      });
+
+      // 입력 시 에러 메시지 숨김
+      input.addEventListener('input', () => {
+        errorMsg.style.display = 'none';
+      });
+
+      // 자동 포커스
+      setTimeout(() => input.focus(), 100);
+    }
+  }
+
+  handleAgree() {
+    if (!this.agreed) {
+      alert('주의사항에 동의해주세요.');
+      return;
     }
 
-    attachEventListeners() {
-        if (this.showNotice) {
-            const checkbox = document.getElementById('agree-checkbox');
-            const confirmBtn = document.getElementById('notice-confirm-btn');
+    localStorage.setItem('braille_notice_agreed', 'true');
+    this.showNotice = false;
+    this.render();
+  }
 
-            checkbox.addEventListener('change', (e) => {
-                this.agreed = e.target.checked;
-                confirmBtn.disabled = !this.agreed;
-            });
-
-            confirmBtn.addEventListener('click', () => {
-                this.handleAgree();
-            });
-        } else {
-            const form = document.getElementById('password-form');
-            const input = document.getElementById('password-input');
-            const errorMsg = document.getElementById('error-message');
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                this.handlePasswordSubmit(input.value, errorMsg);
-            });
-
-            // 입력 시 에러 메시지 숨김
-            input.addEventListener('input', () => {
-                errorMsg.style.display = 'none';
-            });
-
-            // 자동 포커스
-            setTimeout(() => input.focus(), 100);
-        }
+  handlePasswordSubmit(password, errorMsg) {
+    if (password === this.CORRECT_PASSWORD) {
+      localStorage.setItem('braille_password', password);
+      this.onAuthCallback();
+    } else {
+      errorMsg.textContent = '비밀번호가 올바르지 않습니다.';
+      errorMsg.style.display = 'block';
+      document.getElementById('password-input').value = '';
+      document.getElementById('password-input').focus();
     }
-
-    handleAgree() {
-        if (!this.agreed) {
-            alert('주의사항에 동의해주세요.');
-            return;
-        }
-
-        localStorage.setItem('braille_notice_agreed', 'true');
-        this.showNotice = false;
-        this.render();
-    }
-
-    handlePasswordSubmit(password, errorMsg) {
-        if (password === this.CORRECT_PASSWORD) {
-            localStorage.setItem('braille_password', password);
-            this.onAuthCallback();
-        } else {
-            errorMsg.textContent = '비밀번호가 올바르지 않습니다.';
-            errorMsg.style.display = 'block';
-            document.getElementById('password-input').value = '';
-            document.getElementById('password-input').focus();
-        }
-    }
+  }
 }
 
 export default AuthModal;
