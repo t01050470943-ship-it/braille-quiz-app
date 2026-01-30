@@ -1,0 +1,207 @@
+/**
+ * 인증 모달 스타일
+ * 모바일 최적화 및 스크롤 가능한 레이아웃
+ */
+
+.auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary);
+  background-image: url('/logo-braille.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: var(--spacing-md);
+}
+
+.auth-modal {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-2xl);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border: 3px solid var(--border-color);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.auth-modal h2 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-primary);
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* 로고 이미지 */
+.auth-logo {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-xl) var(--spacing-2xl) 0;
+  flex-shrink: 0;
+}
+
+.auth-logo img {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+}
+
+/* 주의사항 모달 */
+.notice-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: 0 var(--spacing-2xl);
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.notice-text {
+  background: var(--bg-secondary);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border-left: 4px solid #ff9800;
+  flex-shrink: 0;
+}
+
+.notice-text p {
+  margin: var(--spacing-sm) 0;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.notice-text strong {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+.agree-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.agree-checkbox:hover {
+  background: var(--border-color);
+}
+
+.agree-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.agree-checkbox span {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* 비밀번호 입력 모달 */
+.password-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: 0 var(--spacing-2xl);
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.password-hint {
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin: 0;
+}
+
+.password-note {
+  text-align: center;
+  color: #ff9800;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.password-content form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.password-input {
+  padding: var(--spacing-md);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  text-align: center;
+  letter-spacing: 0.2em;
+  transition: border-color var(--transition-fast);
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.error-message {
+  color: #d32f2f;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.auth-modal .btn {
+  width: calc(100% - calc(var(--spacing-2xl) * 2));
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-lg);
+  margin: var(--spacing-md) var(--spacing-2xl) var(--spacing-2xl);
+  flex-shrink: 0;
+}
+
+.auth-modal .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .auth-modal {
+    padding: var(--spacing-lg);
+  }
+
+  .auth-modal h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  .notice-text p {
+    font-size: var(--font-size-sm);
+  }
+  
+  .auth-logo img {
+    max-width: 250px;
+  }
+}

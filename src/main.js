@@ -4,6 +4,7 @@
  */
 
 import './style.css';
+import './styles/auth-modal.css';
 import BrailleTranslator from './engine/BrailleTranslator.js';
 import BrailleUtils from './engine/BrailleUtils.js';
 import BrailleValidator from './engine/BrailleValidator.js';
@@ -12,6 +13,7 @@ import ReadingQuiz from './components/ReadingQuiz.js';
 import WritingQuiz from './components/WritingQuiz.js';
 import WeaknessRadar from './analytics/WeaknessRadar.js';
 import ThemeManager from './theme/ThemeManager.js';
+import AuthModal from './components/AuthModal.js';
 
 console.log('점자 마스터 2024 - 시작');
 
@@ -258,5 +260,11 @@ function renderWeaknessRadar() {
   new WeaknessRadar('radar-container');
 }
 
-// 초기 렌더링
-renderHome();
+// 인증 모달 초기화
+const authModal = new AuthModal('#app', () => {
+  // 인증 성공 시 메인 앱 렌더링
+  renderHome();
+});
+
+// 앱 시작
+authModal.init();
