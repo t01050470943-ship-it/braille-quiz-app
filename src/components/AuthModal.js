@@ -10,7 +10,7 @@ class AuthModal {
     this.showNotice = true;
     this.agreed = false;
     this.password = '';
-    this.CORRECT_PASSWORD = '특수';
+    this.CORRECT_PASSWORD = '39901';
   }
 
   init() {
